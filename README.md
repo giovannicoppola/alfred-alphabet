@@ -82,6 +82,7 @@ You can launch Alfred Workflows using single letters (either alone, or with a pr
 	- *Optional*: set the keyword for the workflow (default: `aalpha`)
 	- *Optional*: set a hotkey for the workflow
 	- *Optional*: enter letter prefixes (one or more characters), separated by space, e.g. `! @ aa` for the prefixes `!`, `@`, and `aa`. 
+	- *Optional*: check the `Include Disabled Workflows` checkbox if you want to include disabled Workflows
 
 
 

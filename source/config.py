@@ -10,6 +10,7 @@ def log(s, *args):
 
 
 WF_DATA = os.getenv('alfred_workflow_data')
+INCLUDE_DISABLED = os.getenv('INCLUDE_DISABLED')
 PREFIXES = os.getenv('MyPrefixes')
 WF_CUSTOM = f"{WF_DATA}/custom.csv"
 ALFRED_PREFS = os.getenv('alfred_preferences')

@@ -13,7 +13,7 @@ import csv
 
 
 
-from config import DIRNAME, PREFIXES, log, WF_CUSTOM
+from config import DIRNAME, PREFIXES, log, WF_CUSTOM, INCLUDE_DISABLED
 prefixes = PREFIXES.split(' ')
 
 
@@ -139,7 +139,11 @@ def fetchPlists():
                 
         except:
             continue
-        
+                
+        if myPlist['disabled'] == True:
+            if (INCLUDE_DISABLED == "0"): 
+                log (f"skipping {myPlist['name']} (disabled)")
+                continue
         ## KEYWORDS
         try:
             # fetching keywords in each workflow, adding them to myKeyList

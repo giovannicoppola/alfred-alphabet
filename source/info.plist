@@ -511,11 +511,30 @@ A few examples are listed as demo in the default file.</string>
 			<key>variable</key>
 			<string>MyPrefixes</string>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Check to incllude disabled workflows</string>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Include Disabled Workflows</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>INCLUDE_DISABLED</string>
+		</dict>
 	</array>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>0.1</string>
+	<string>0.2</string>
 	<key>webaddress</key>
 	<string>https://github.com/giovannicoppola/alfred-alphabet</string>
 </dict>
