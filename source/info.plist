@@ -534,7 +534,7 @@ A few examples are listed as demo in the default file.</string>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>0.2</string>
+	<string>0.2.1</string>
 	<key>webaddress</key>
 	<string>https://github.com/giovannicoppola/alfred-alphabet</string>
 </dict>

@@ -102,6 +102,7 @@ You can launch Alfred Workflows using single letters (either alone, or with a pr
 
 <h1 id="changelog">Changelog 🧰</h1>
 
+- 2026-07-21: version 0.2.1, fixed hotkeys mis-attributed across workflows (stale `myHotkeys`), apostrophe-safe detail view (proper JSON), guards for unset config
 - 07-07-2023: version 0.1
 
 

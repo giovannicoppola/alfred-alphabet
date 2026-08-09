@@ -14,7 +14,7 @@ import csv
 
 
 from config import DIRNAME, PREFIXES, log, WF_CUSTOM, INCLUDE_DISABLED
-prefixes = PREFIXES.split(' ')
+prefixes = (PREFIXES or '').split(' ')
 
 
 MYINPUT = sys.argv[1]
@@ -186,6 +186,7 @@ def fetchPlists():
                 
 
         ## HOTKEYS
+        myHotkeys = []  # reset per workflow: a KeyError below must not reuse the previous workflow's hotkeys
         try:
             # all the hotkeys in each workflow, use hotmod to convert the ID to a string
             myHotkeys = [hotmod[o['config']['hotmod']]+"-"+o['config']['hotstring'].lower()
@@ -329,7 +330,7 @@ def fetchPlists():
                 
                 },
                 'variables': {
-                    'myDict': f'{{"{key}": {alphabet[key]}}}'
+                    'myDict': json.dumps({key: alphabet[key]})
                 },
                 "icon": {
                     "path": f'icons/{key}.png'

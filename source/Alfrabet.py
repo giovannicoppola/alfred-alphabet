@@ -9,10 +9,6 @@
 
 import sys
 from Alfrabet_functions import *
-import time
-
-
-startTimeJ = time.time()
 
 
 query = sys.argv[1]

@@ -16,8 +16,8 @@ def log(s, *args):
     print(s, file=sys.stderr)
 
 
-MYINPUTs = os.getenv('myDict').replace("'","\"")
-MYINPUT = json.loads(MYINPUTs)
+myDictRaw = os.getenv('myDict')
+MYINPUT = json.loads(myDictRaw) if myDictRaw else {}
 
 
 
@@ -28,6 +28,9 @@ def main():
     result = {"items": []}
   
     content = list(MYINPUT.values())
+    if not content:
+        print(json.dumps(result))
+        return
     myLetter = list(MYINPUT.keys())[0]
     for x in content[0]:
         if x['prefix'] == 'none':
