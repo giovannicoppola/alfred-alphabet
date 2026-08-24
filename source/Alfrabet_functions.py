@@ -20,6 +20,50 @@ prefixes = (PREFIXES or '').split(' ')
 MYINPUT = sys.argv[1]
 
 
+# summary string glyphs: workflow, custom hotkey, both, unused
+yesS = '🟢'
+yesC = '🟠'
+yesSS = '🔴'
+noS = '⚪'
+
+BASE_LETTERS = 'abcdefghijklmnopqrstuvwxyz'
+
+#order for summary string
+# none-custom prefixes - 4 single keys - 3 combo - 2 combo 1 combo
+# example:
+# ⚪-⚪⚪⚪-⚪⚪⚪⚪-⚪⚪⚪-⚪⚪-⚪-⚪⚪⚪-⚪
+MY_KEY_ORDER = [
+    'sht',
+    'ctl',
+    'opt',
+    'cmd',
+
+    'spacer', #non existing key, corresponding to hyphen
+
+    'sht-ctl',
+    'sht-opt',
+    'sht-cmd',
+
+    'spacer', #non existing key, corresponding to hyphen
+
+    'ctl-opt',
+    'ctl-cmd',
+
+    'spacer', #non existing key, corresponding to hyphen
+
+    'opt-cmd',
+
+    'spacer', #non existing key, corresponding to hyphen
+
+    'sht-ctl-opt',
+    'sht-ctl-cmd',
+    'ctl-opt-cmd',
+
+    'spacer', #non existing key, corresponding to hyphen
+    'sht-ctl-opt-cmd',
+    ]
+
+
 
 
 
@@ -97,7 +141,7 @@ def fetchCustomHotkeys ():
 
 
 
-def fetchPlists():
+def buildAlphabet():
 
     # this information is borrowed from (com.help.shawn.rice) by Shawn Rice
     hotmod = {
@@ -211,45 +255,16 @@ def fetchPlists():
     alphabet = {k: alphabet[k] for k in sorted(alphabet.keys())}
     #log (alphabet)
 
+    return alphabet
+
+
+def fetchPlists():
+    alphabet = buildAlphabet()
+
+
     
-    #order for summary string
-    # none-custom prefixes - 4 single keys - 3 combo - 2 combo 1 combo
-    # example:
-    # ⚪-⚪⚪⚪-⚪⚪⚪⚪-⚪⚪⚪-⚪⚪-⚪-⚪⚪⚪-⚪
-    yesS = '🟢'
-    yesC = '🟠'
-    yesSS = '🔴'
     result = {"items": []}
-    myKeyOrder = [
-        'sht',
-        'ctl',
-        'opt',
-        'cmd',
-        
-        'spacer', #non existing key, corresponding to hyphen
-        
-        'sht-ctl',
-        'sht-opt',
-        'sht-cmd',
-        
-        'spacer', #non existing key, corresponding to hyphen
-        
-        'ctl-opt',
-        'ctl-cmd',
-        
-        'spacer', #non existing key, corresponding to hyphen
-        
-        'opt-cmd',
-        
-        'spacer', #non existing key, corresponding to hyphen
-        
-        'sht-ctl-opt',
-        'sht-ctl-cmd',
-        'ctl-opt-cmd',
-        
-        'spacer', #non existing key, corresponding to hyphen
-        'sht-ctl-opt-cmd',
-        ]
+    myKeyOrder = MY_KEY_ORDER
     # compiling the default summary string (here is the place where one could add systemwide shortcuts)
     if prefixes == ['']:
         customPrefString = ''    
@@ -330,12 +345,13 @@ def fetchPlists():
                 
                 },
                 'variables': {
-                    'myDict': json.dumps({key: alphabet[key]})
+                    'myDict': json.dumps({key: alphabet[key]}),
+                    'myKey': key
                 },
                 "icon": {
                     "path": f'icons/{key}.png'
                 },
-                'arg': key
+                'arg': ''
                     }) 
 
     
@@ -369,3 +385,120 @@ def fetchPlists():
 
 
 
+
+
+def prefixLabel (myPrefix):
+    # 'none' is how single-letter keywords (no prefix at all) are stored
+    return 'no prefix' if myPrefix == 'none' else myPrefix
+
+
+def letterBlocks (alphabet):
+    # a-z always first and always in the same position, so that the same column
+    # means the same letter in every row; anything else in use (digits, symbols)
+    # goes in a final block
+    blocks = [BASE_LETTERS[i:i+5] for i in range(0, len(BASE_LETTERS), 5)]
+    extras = ''.join(sorted(k for k in alphabet if k not in BASE_LETTERS))
+    if extras:
+        blocks.append(extras)
+    return blocks
+
+
+def prefixSummary (myPrefix, alphabet, blocks):
+    # one circle per letter, same color code as the by-letter view
+    summaryBlocks = []
+    myLetters = []
+    for block in blocks:
+        summaryBlock = ''
+        for letter in block:
+            values = [d for d in alphabet.get(letter, []) if d.get('prefix') == myPrefix]
+            workflow_key = any(d.get('type') == 'workflow' for d in values)
+            custom_key = any(d.get('type') == 'custom' for d in values)
+
+            if workflow_key and custom_key:
+                summaryBlock += yesSS
+            elif workflow_key:
+                summaryBlock += yesS
+            elif custom_key:
+                summaryBlock += yesC
+            else:
+                summaryBlock += noS
+                continue
+            myLetters.append(letter)
+        summaryBlocks.append(summaryBlock)
+
+    return '-'.join(summaryBlocks), myLetters
+
+
+def fetchByPrefix():
+    # the by-letter view transposed: one row per prefix/modifier, one circle per letter
+    alphabet = buildAlphabet()
+    blocks = letterBlocks(alphabet)
+
+    usedPrefixes = {d['prefix'] for values in alphabet.values() for d in values}
+
+    # no prefix and the user's own prefixes are always listed (an empty row means
+    # the whole alphabet is still free there); modifiers only when in use
+    myPrefixes = ['none'] + [p for p in prefixes if p]
+    myPrefixes += [k for k in MY_KEY_ORDER if k != 'spacer' and k in usedPrefixes]
+
+    if MYINPUT:
+        myQuery = MYINPUT.casefold()
+        myPrefixes = [p for p in myPrefixes if myQuery in prefixLabel(p).casefold()]
+
+    result = {"items": []}
+    for myPrefix in myPrefixes:
+        summaryString, myLetters = prefixSummary(myPrefix, alphabet, blocks)
+        myLabel = prefixLabel(myPrefix)
+        summarySubtitle = ",".join(myLetters) if myLetters else 'no keywords or hotkeys'
+        summarySubtitleLarge = f"{myLabel}: {summarySubtitle}"
+
+        myDict = {letter: [d for d in alphabet[letter] if d.get('prefix') == myPrefix]
+            for letter in myLetters}
+
+        myIcon = f'icons/{myPrefix}.png'
+        if not os.path.exists(myIcon):
+            myIcon = 'icons/icon.png'
+
+        result["items"].append({
+                "title": f"{summaryString}",
+                'subtitle': f"{myLabel}: {summarySubtitle}",
+                'valid': True,
+
+            "mods": {
+                    "ctrl": {
+                        "valid": True,
+                        "subtitle": "Show summary in large font",
+                        "variables": {
+                            'mySummary': f"{summaryString}\n{summarySubtitleLarge}",
+
+                    },
+                        },
+
+                },
+                'variables': {
+                    'myDict': json.dumps(myDict),
+                    'myKey': myPrefix
+                },
+                "icon": {
+                    "path": myIcon
+                },
+                'arg': ''
+                    })
+
+    if not result["items"]:
+        if MYINPUT:
+            myString = f"No prefix or modifier matching {MYINPUT}"
+        else:
+            myString = "No prefixes to show"
+        result["items"].append({
+                "title": myString,
+                'subtitle': "Try another query, or add prefixes in Workflow Configuration 🔤",
+                'valid': True,
+
+                "icon": {
+                    "path": f'icons/warning.png'
+                },
+                'arg': ""
+                    })
+
+    print (json.dumps(result))

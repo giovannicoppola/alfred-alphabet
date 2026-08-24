@@ -77,6 +77,39 @@
 				<false/>
 			</dict>
 		</array>
+		<key>FAA9082A-7F74-4898-97DC-7FAEA299916E</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>A5963A6B-E2C2-4988-8851-668E29DCB175</string>
+				<key>modifiers</key>
+				<integer>262144</integer>
+				<key>modifiersubtext</key>
+				<string>show workflow Info</string>
+				<key>vitoclose</key>
+				<true/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>AF0DFD73-F306-477B-B142-5A7B412AC2A3</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>13BACD9D-8914-4B9B-A16D-804E941ABFB4</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>FCC1CDE2-B70D-4560-8EE2-7410E9DCD989</key>
 		<array>
 			<dict>
@@ -169,11 +202,11 @@
 				<key>alfredfiltersresultsmatchmode</key>
 				<integer>0</integer>
 				<key>argumenttreatemptyqueryasnil</key>
-				<true/>
+				<false/>
 				<key>argumenttrimmode</key>
 				<integer>0</integer>
 				<key>argumenttype</key>
-				<integer>2</integer>
+				<integer>1</integer>
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>queuedelaycustom</key>
@@ -193,7 +226,7 @@
 				<key>scriptfile</key>
 				<string></string>
 				<key>subtext</key>
-				<string></string>
+				<string>Enter a letter, or part of a workflow name</string>
 				<key>title</key>
 				<string></string>
 				<key>type</key>
@@ -313,7 +346,7 @@ end run</string>
 				<key>autopaste</key>
 				<false/>
 				<key>clipboardtext</key>
-				<string>{query}</string>
+				<string>{var:myKey}</string>
 				<key>ignoredynamicplaceholders</key>
 				<false/>
 				<key>transient</key>
@@ -370,6 +403,55 @@ end run</string>
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>{var:prefixkeyword}</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>fetching data...⏳</string>
+				<key>script</key>
+				<string>python3 Alfrabet_prefix.py "$1"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>Letters used by each prefix or modifier</string>
+				<key>title</key>
+				<string>Alfred's Alphabet by prefix</string>
+				<key>type</key>
+				<integer>5</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>FAA9082A-7F74-4898-97DC-7FAEA299916E</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string># Alfred's alphabet 🔤
@@ -379,8 +461,9 @@ end run</string>
 - launch with keyword (default: `aalpha`), or custom hotkey
 - scroll results or enter a single letter to filter. The first output is an overview with one circle per keyword/hotkey. 
 - ⚪: unused prefix/hotkey modifier
-- 🟠: prefix/hotkey modifier used for Alfred Workflow
-- 🔴: used prefix/hotkey modifier, conflicting with one of the custom/system-wide shortcuts
+- 🟢: prefix/hotkey modifier used for an Alfred Workflow
+- 🟠: hotkey modifier used by one of your custom/system-wide shortcuts
+- 🔴: used by both, i.e. conflicting
 - Circles are grouped in blocks as follows:
 	1. no prefix (i.e. single-letter keyword)
 	2. prefix block (if any): if any letter prefixes have been entered in `Workflow configuration`, they will be represented in this block (one circle per prefix)
@@ -393,7 +476,16 @@ end run</string>
 	6. 4-key modifier (block of 1): `sht-ctl-opt-cmd`
 - `ctrl-enter` `^`↩️ will show the overview in large font
 - `enter` ↩️ will list the workflows using that letter
+- in that list, enter a letter to jump to it, or two or more characters to filter by workflow name
 - further pressing `enter` ↩️ will open the config page of the corresponding Workflow. 
+
+## Browsing by prefix
+- launch with keyword (default: `aprefix`)
+- the same overview, transposed: one row per prefix (or hotkey modifier), with one circle per letter
+- blocks are always `a-e`, `f-j`, `k-o`, `p-t`, `u-y`, `z`, plus a final block with any other character in use (digits, symbols); the subtitle spells out the letters used
+- enter a prefix (e.g. `!`) or part of a modifier (e.g. `cmd`) to filter the rows
+- `enter` ↩️ will list all the workflows using that prefix
+- in that list, enter a letter to jump to it, or two or more characters to filter by workflow name
 
 ## Saving custom hotkeys
 By entering `:aalpha` you can open a `csv` file with custom hotkeys. 
@@ -404,67 +496,74 @@ A few examples are listed as demo in the default file.</string>
 		<key>13BACD9D-8914-4B9B-A16D-804E941ABFB4</key>
 		<dict>
 			<key>xpos</key>
-			<real>665</real>
+			<real>665.0</real>
 			<key>ypos</key>
-			<real>510</real>
+			<real>510.0</real>
 		</dict>
 		<key>3474BD05-DCDF-4B0F-B161-59780516627F</key>
 		<dict>
 			<key>xpos</key>
-			<real>315</real>
+			<real>315.0</real>
 			<key>ypos</key>
-			<real>565</real>
+			<real>565.0</real>
 		</dict>
 		<key>632E4F42-17AD-4371-8AA9-4FCEC4413D17</key>
 		<dict>
 			<key>colorindex</key>
 			<integer>9</integer>
 			<key>xpos</key>
-			<real>995</real>
+			<real>995.0</real>
 			<key>ypos</key>
-			<real>440</real>
+			<real>440.0</real>
 		</dict>
 		<key>6E68CFEC-ADEF-4E59-A76F-BF689FBB9B24</key>
 		<dict>
 			<key>xpos</key>
-			<real>995</real>
+			<real>995.0</real>
 			<key>ypos</key>
-			<real>285</real>
+			<real>285.0</real>
 		</dict>
 		<key>70D0CFAE-2ADC-4921-A64C-A328D2E9FA91</key>
 		<dict>
 			<key>xpos</key>
-			<real>85</real>
+			<real>85.0</real>
 			<key>ypos</key>
-			<real>565</real>
+			<real>565.0</real>
 		</dict>
 		<key>941C7010-C5D0-4F7B-9EE2-F407E119E895</key>
 		<dict>
 			<key>xpos</key>
-			<real>315</real>
+			<real>315.0</real>
 			<key>ypos</key>
-			<real>285</real>
+			<real>285.0</real>
 		</dict>
 		<key>A5963A6B-E2C2-4988-8851-668E29DCB175</key>
 		<dict>
 			<key>xpos</key>
-			<real>665</real>
+			<real>665.0</real>
 			<key>ypos</key>
-			<real>65</real>
+			<real>65.0</real>
 		</dict>
 		<key>AF0DFD73-F306-477B-B142-5A7B412AC2A3</key>
 		<dict>
 			<key>xpos</key>
-			<real>665</real>
+			<real>665.0</real>
 			<key>ypos</key>
-			<real>285</real>
+			<real>285.0</real>
+		</dict>
+		<key>FAA9082A-7F74-4898-97DC-7FAEA299916E</key>
+		<dict>
+			<key>xpos</key>
+			<real>315.0</real>
+			<key>ypos</key>
+			<real>115.0</real>
 		</dict>
 		<key>FCC1CDE2-B70D-4560-8EE2-7410E9DCD989</key>
 		<dict>
 			<key>xpos</key>
-			<real>90</real>
+			<real>90.0</real>
 			<key>ypos</key>
-			<real>285</real>
+			<real>285.0</real>
 		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>
@@ -489,6 +588,27 @@ A few examples are listed as demo in the default file.</string>
 			<string>textfield</string>
 			<key>variable</key>
 			<string>mainkeyword</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>aprefix</string>
+				<key>placeholder</key>
+				<string></string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>Lists the letters used by each prefix/modifier</string>
+			<key>label</key>
+			<string>Prefix Keyword</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>prefixkeyword</string>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -534,7 +654,7 @@ A few examples are listed as demo in the default file.</string>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>0.2.1</string>
+	<string>0.3</string>
 	<key>webaddress</key>
 	<string>https://github.com/giovannicoppola/alfred-alphabet</string>
 </dict>

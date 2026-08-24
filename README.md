@@ -47,8 +47,9 @@ You can launch Alfred Workflows using single letters (either alone, or with a pr
 - launch with keyword (default: `aalpha`), or custom hotkey
 - scroll results or enter a single letter to filter. The first output is an overview with one circle per keyword/hotkey. 
 - ⚪: unused prefix/hotkey modifier
--  🟠: prefix/hotkey modifier used for Alfred Workflow
--  🔴: used prefix/hotkey modifier, conflicting with one of the custom/system-wide shortcuts
+-  🟢: prefix/hotkey modifier used for an Alfred Workflow
+-  🟠: hotkey modifier used by one of your custom/system-wide shortcuts
+-  🔴: used by both, i.e. conflicting
 - Circles are grouped in blocks as follows:
 	1. no prefix (i.e. single-letter keyword)
 	2. prefix block (if any): if any letter prefixes have been entered in `Workflow configuration`, they will be represented in this block (one circle per prefix)
@@ -61,7 +62,19 @@ You can launch Alfred Workflows using single letters (either alone, or with a pr
 	6. 4-key modifier (block of 1): `sht-ctl-opt-cmd`
 - `ctrl-enter` `^`↩️ will show the overview in large font
 - `enter` ↩️ will list the workflows using that letter
+- in that list, enter a letter to jump to it, or two or more characters to filter by workflow name
 - further pressing `enter` ↩️ will open the config page of the corresponding Workflow. 
+
+## Browsing by prefix
+- launch with keyword (default: `aprefix`)
+- the same overview, transposed: one row per prefix (or hotkey modifier), with one circle per letter
+- the first blocks are always `a-e`, `f-j`, `k-o`, `p-t`, `u-y`, `z`, so the same position always means the same letter; a final block lists any other character in use (digits, symbols), and the subtitle spells out the letters used
+- the colors are the same: ⚪ unused, 🟢 workflow, 🟠 custom hotkey, 🔴 conflicting
+- rows: `no prefix` and every prefix set in `Workflow configuration` are always shown (an empty row means the whole alphabet is still free there), hotkey modifiers only when in use
+- enter a prefix (e.g. `!`) or part of a modifier (e.g. `cmd`) to filter the rows
+- `ctrl-enter` `^`↩️ will show the overview in large font
+- `enter` ↩️ will list all the workflows using that prefix, letter by letter
+- in that list, enter a letter to jump to it, or two or more characters to filter by workflow name
 
 ## Saving custom hotkeys
 - By entering `:aalpha` you can open a `csv` file with custom hotkeys. 
@@ -80,6 +93,7 @@ You can launch Alfred Workflows using single letters (either alone, or with a pr
 ## Default settings 
 - In Alfred, open the 'Configure Workflow' menu in `alfred-alphabet` preferences
 	- *Optional*: set the keyword for the workflow (default: `aalpha`)
+	- *Optional*: set the keyword for the by-prefix view (default: `aprefix`)
 	- *Optional*: set a hotkey for the workflow
 	- *Optional*: enter letter prefixes (one or more characters), separated by space, e.g. `! @ aa` for the prefixes `!`, `@`, and `aa`. 
 	- *Optional*: check the `Include Disabled Workflows` checkbox if you want to include disabled Workflows
@@ -102,6 +116,7 @@ You can launch Alfred Workflows using single letters (either alone, or with a pr
 
 <h1 id="changelog">Changelog 🧰</h1>
 
+- 2026-08-23: version 0.3, new by-prefix view (keyword `aprefix`): the same overview transposed, one row per prefix/hotkey modifier and one circle per letter. The detail list can now be filtered by letter (one character) or by workflow name (two or more)
 - 2026-07-21: version 0.2.1, fixed hotkeys mis-attributed across workflows (stale `myHotkeys`), apostrophe-safe detail view (proper JSON), guards for unset config
 - 07-07-2023: version 0.1
 
